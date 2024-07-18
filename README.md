@@ -62,39 +62,62 @@ Main: The entry point of the application. Provides a menu for user interaction.
 **InvoiceBilling Class**
 
 createInvoice: Handles the creation of a new invoice, including customer validation, adding items, and calculating totals.
+
 createItem: Manages the creation of new items or updates existing items.
+
 viewAllInvoices: Displays all invoices with customer details.
+
 viewInvoiceByID: Shows detailed information of a specific invoice.
+
 viewCustomerBalance: Fetches and displays the balance of a customer based on their mobile number.
+
 viewItemSales: Summarizes the sales of each item.
 
 **Invoice Class**
 
 Invoice: Represents an invoice with customer details, date, and discount.
+
 addInvoiceRecord: Adds a new invoice record to the database.
+
 createInvoiceDetail: Adds item details to an invoice.
+
 updateInvoiceDetail: Updates item details in an invoice.
+
 deleteInvoiceDetail: Deletes item details from an invoice.
+
 updateInvoiceTotal: Updates the total amount of an invoice after applying discount.
+
 
 **Customer Class**
 
 Customer: Represents a customer with attributes like ID, name, mobile number, and balance.
+
 getCustomerByMobileNumber: Fetches customer details by mobile number.
+
 addCustomer: Adds a new customer to the database.
+
 updateCustomerBalance: Updates the customer's balance.
+
 isValidMobileNumber: Validates the mobile number format.
+
 isValidName: Validates the customer name format.
 
 **Item Class**
 
 Item: Represents an item with attributes like ID, name, unit, and rate.
+
 getItemIDbyItemName: Fetches item details by item name.
+
 addItem: Adds a new item to the database.
+
 updateItemRecord: Updates item rate in the database.
+
 getItemRate: Fetches the rate of an item.
-DataBaseConnection Class
+
+**DataBaseConnection Class**
+
 getConnection: Establishes and returns a connection to the database.
+
 
 
 **Module Description :**
