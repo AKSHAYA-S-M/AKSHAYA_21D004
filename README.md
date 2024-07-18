@@ -1,5 +1,8 @@
 # InvoiceBillingSystem
 
+This Invoice Billing System, developed in Java using JDBC, offers efficient billing management with key functionalities like customer and items management, invoice creation, balance updates, and sales reporting. It allows for adding and managing customers, creating and updating invoices with accurate calculations of totals and discounts, and manages pricing more efficiently. Users can also view and update customer balances and generate detailed sales reports.
+
+
 **TABLE DESIGN:**
 
 
