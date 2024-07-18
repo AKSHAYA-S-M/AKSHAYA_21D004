@@ -54,7 +54,7 @@ Price: Total price for the quantity of the item in that invoice.
 
 
 
-**Module Description for GitHub Repository:**
+**Module Description :**
 
 This project implements an invoice billing system in Java, utilizing MySQL for database management. It provides functionalities to create invoices, manage customers and items, and view sales data. Key features include:
 
