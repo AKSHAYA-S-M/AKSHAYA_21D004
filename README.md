@@ -5,6 +5,7 @@
 **Customers Table:**
 
 CustomerID (Primary Key): Auto-incremented unique identifier for each customer.
+
 Name: Name of the customer.
 MobileNumber: Unique mobile number of the customer.
 Balance: Current balance due for the customer.
