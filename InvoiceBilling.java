@@ -97,8 +97,7 @@ public class InvoiceBilling {
 
             System.out.println("Invoice created successfully.");
             System.out.println("Initial Balance: " + initialBalance);
-            InvoiceBilling.viewInvoiceByID(invoiceId);
-            System.out.println("Paid Amount: " + paidAmount);
+            InvoiceBilling.viewInvoiceByID(invoiceId); 
             System.out.println("Balance Due: " + finalBalance); 
         } catch (SQLException e) {
             e.printStackTrace();
