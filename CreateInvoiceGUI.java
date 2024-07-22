@@ -4,8 +4,12 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+
 import java.awt.Font;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.JButton;
 import java.awt.Color;
 import javax.swing.JTextArea;
@@ -15,14 +19,13 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import javax.swing.JInternalFrame;
+import javax.swing.JList;
 
 public class CreateInvoiceGUI {
 
     private JFrame frame;
     private JTextField txtMobileNumber;
-    private JTextField txtCustomerID;
     private JTextField txtCustomerName;
-    private JTextField txtinitialBalance;
     private JTextField txtitemName;
     private JTextArea fetchCustomer;
     private JTextField txtDiscount;
@@ -47,6 +50,11 @@ public class CreateInvoiceGUI {
     private double amount;
     private double paidAmount;
     private double finalBalance;
+    private JTextArea txtCustomerID;
+    private JTextArea txtinitialBalance;
+    private JTable table;
+    private DefaultTableModel tableModel;
+	private JScrollPane scrollPane;
     
     public double getInitialBalance() {
         return initialBalance;
@@ -91,9 +99,10 @@ public class CreateInvoiceGUI {
 
     private void initialize() {
         frame = new JFrame();
+        frame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 14));
         frame.setTitle("Invoice Billing");
         frame.getContentPane().setForeground(new Color(0, 0, 0));
-        frame.setBounds(100, 100, 709, 623);
+        frame.setBounds(100, 100, 863, 623);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(null); 
 
@@ -110,15 +119,8 @@ public class CreateInvoiceGUI {
 
         customerID = new JLabel("Customer ID");
         customerID.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        customerID.setBounds(44, 108, 187, 27);
+        customerID.setBounds(44, 108, 165, 27);
         frame.getContentPane().add(customerID);
-
-        txtCustomerID = new JTextField();
-        txtCustomerID.setEditable(false);
-        txtCustomerID.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        txtCustomerID.setBounds(223, 110, 330, 22);
-        frame.getContentPane().add(txtCustomerID);
-        txtCustomerID.setColumns(10);
 
         JLabel customerName = new JLabel("Customer Name");
         customerName.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -133,15 +135,8 @@ public class CreateInvoiceGUI {
 
         JLabel initialBalance = new JLabel("Initial Balance");
         initialBalance.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        initialBalance.setBounds(44, 184, 187, 27);
+        initialBalance.setBounds(44, 184, 170, 27);
         frame.getContentPane().add(initialBalance);
-
-        txtinitialBalance = new JTextField();
-        txtinitialBalance.setEditable(false);
-        txtinitialBalance.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        txtinitialBalance.setBounds(223, 186, 330, 22);
-        frame.getContentPane().add(txtinitialBalance);
-        txtinitialBalance.setColumns(10);
 
         JLabel lblitemName = new JLabel("Enter Item");
         lblitemName.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -350,6 +345,34 @@ public class CreateInvoiceGUI {
         lblStoreName.setFont(new Font("Calisto MT", Font.BOLD, 20));
         lblStoreName.setBounds(299, 26, 138, 27);
         frame.getContentPane().add(lblStoreName);
+        
+        txtCustomerID = new JTextArea();
+        txtCustomerID.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        txtCustomerID.setEditable(false);
+        txtCustomerID.setBounds(223, 110, 330, 22);
+        frame.getContentPane().add(txtCustomerID);
+        
+        txtinitialBalance = new JTextArea();
+        txtinitialBalance.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        txtinitialBalance.setEditable(false);
+        txtinitialBalance.setBounds(223, 186, 330, 22);
+        frame.getContentPane().add(txtinitialBalance);
+        
+        tableModel = new DefaultTableModel(
+                new Object[][]{},
+                new String[]{"Item Name", "Quantity"}
+        );
+
+        table = new JTable(tableModel);
+        table.setBackground(new Color(255, 255, 255));
+        table.setBounds(74, 266, 337, 31); 
+        scrollPane = new JScrollPane(table);
+        scrollPane.setBounds(584, 123, 231, 258);
+        frame.getContentPane().add(scrollPane);
+        
+        JList list = new JList();
+        list.setBounds(703, 463, 1, 1);
+        frame.getContentPane().add(list);
          
     }
 
@@ -400,7 +423,7 @@ public class CreateInvoiceGUI {
     }
     
     private void handleAddItem(String itemName,int quantity) {
-    	try (Connection connection = DataBaseConnection.getConnection()) {
+    	try (Connection connection = DataBaseConnection.getConnection()) {  
             Item item = Item.getItemIDbyItemName(connection, itemName);
             if (item == null) {
                 txtItemStatus.setText("Item not found");
@@ -409,6 +432,7 @@ public class CreateInvoiceGUI {
             itemId = item.getId(); 
     		double price = Item.getItemRate(connection, itemName) * quantity;
             Invoice.createInvoiceDetail(connection, invoiceId, itemId, quantity, price);
+            tableModel.addRow(new Object[]{itemName, quantity});
             txtItemStatus.setText("Item Added Successfully");
     	}catch (SQLException e) {
             e.printStackTrace();
@@ -421,6 +445,14 @@ public class CreateInvoiceGUI {
                 txtItemStatus.setText("Item not found");
                 return;
             }
+    		boolean itemFound = false;
+            for (int i = 0; i < tableModel.getRowCount(); i++) {
+            	if (tableModel.getValueAt(i, 0).toString().equalsIgnoreCase(itemName)) {
+                    tableModel.setValueAt(newQuantity, i, 1);
+                    itemFound = true;
+                    break;
+                }
+            } 
             itemId = item.getId(); 
     		double newPrice = Item.getItemRate(connection, itemName) * newQuantity;
             Invoice.updateInvoiceDetail(connection, invoiceId, itemId, newQuantity, newPrice);
@@ -436,6 +468,14 @@ public class CreateInvoiceGUI {
                 txtItemStatus.setText("Item not found");
                 return;
             }
+    		boolean itemFound = false;
+            for (int i = 0; i < tableModel.getRowCount(); i++) {
+            	if (tableModel.getValueAt(i, 0).toString().equalsIgnoreCase(itemName)) {
+                    tableModel.removeRow(i);
+                    itemFound = true;
+                    break;
+                }
+            } 
     		itemId = item.getId();
             Invoice.deleteInvoiceDetail(connection, invoiceId, itemId);
             txtItemStatus.setText("Item Deleted Successfully");
